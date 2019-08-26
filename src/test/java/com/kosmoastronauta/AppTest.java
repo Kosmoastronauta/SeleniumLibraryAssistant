@@ -29,7 +29,5 @@ public class AppTest
     public void test() {
         driver.get("http://localhost:4200/");
         Assertions.assertEquals("AngularLA",driver.getTitle());
-
-
     }
 }
