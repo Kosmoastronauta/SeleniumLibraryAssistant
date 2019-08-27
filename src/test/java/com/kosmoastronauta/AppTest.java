@@ -1,5 +1,6 @@
 package com.kosmoastronauta;
 
+import com.kosmoastronauta.page.SideMenu;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.Alert;
@@ -7,27 +8,35 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AppTest
 {
     public static final String WEB = "http://localhost:4200/";
-    public WebDriver driver;
+    private static WebDriver driver;
+    private static SideMenu sideMenu;
 
     @BeforeAll
     public static void setupClass() {
         WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        sideMenu = new SideMenu(driver);
     }
 
     @BeforeEach
     public void setupTest() {
-         driver= new ChromeDriver();
+
     }
 
     @AfterEach
     public void teardown() {
        // driver.close();
+    }
+
+    @AfterAll
+    public static void close()
+    {
+        driver.close();
+        driver.quit();
     }
 
     @Test
@@ -41,7 +50,8 @@ public class AppTest
     {
         String message = "";
         driver.get(WEB);
-        driver.findElement(By.id("addMemberNav")).click();
+        Thread.sleep(1000);
+        sideMenu.clickAddMemberButton();
         driver.findElement(By.id("submitMember")).click();
         Thread.sleep(1000);
 
@@ -52,7 +62,6 @@ public class AppTest
             message = alert.getText();
         }catch(UnhandledAlertException e)
         {
-            System.out.println(message);
             Assertions.assertEquals(message, "Error while creating new member");
         }
     }
